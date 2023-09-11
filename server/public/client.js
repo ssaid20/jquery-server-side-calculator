@@ -1,6 +1,6 @@
 $(document).ready(onReady); 
 function onReady() {
-    // Event listeners for button clicks. 
+    // Event listeners for button clicks.
     $('#one').on("click", function() {
         $('#display').text($('#display').text() + '1');
     });
@@ -43,10 +43,11 @@ function onReady() {
     $('#divide').on("click", function() {
         $('#display').text($('#display').text() + '/');
     });
-    $('#equals').on("click", calculate); //When clicked, the calculate function will be executed.
-    $('#clear').on("click", clearInputs); //When clicked, the clearInputs function will be executed.
+    $('#equals').on("click", calculate); // When clicked, the calculate function will be executed.
+    $('#clear').on("click", clearInputs); // When clicked, the clearInputs function will be executed.
     getHistory(); // Call the getHistory function when the document is ready.
 }
+
 function calculate() {
     let expression = $('#display').text(); // Get the current expression from the display.
 
@@ -63,8 +64,19 @@ function calculate() {
     });
 }
 
+function clearInputs() {
+    $('#display').text(''); // Clear the display.
+}
 
-
-
-
-
+function getHistory() {
+    $.ajax({
+        type: 'GET',
+        url: '/history',
+    }).then(function(response) {
+        var historyDiv = $('#history');
+        historyDiv.html(''); // Clear the current history.
+        response.forEach(item => {
+            historyDiv.html(historyDiv.html() + item.expression + ' = ' + item.result + '<br>'); // Append each item in the history received from the server to the historyDiv.
+        });
+    });
+}
