@@ -47,6 +47,21 @@ function onReady() {
     $('#clear').on("click", clearInputs); //When clicked, the clearInputs function will be executed.
     getHistory(); // Call the getHistory function when the document is ready.
 }
+function calculate() {
+    let expression = $('#display').text(); // Get the current expression from the display.
+
+    $.ajax({
+        type: 'POST',
+        url: '/calculate',
+        data: 'expression=' + encodeURIComponent(expression),
+    }).then(function(response) {
+        console.log('Success:', response);
+        $('#display').text(response.result); // Update the display with the result received from the server.
+        getHistory(); // Update the history.
+    }).catch(function(error) {
+        console.error('Error:', error);
+    });
+}
 
 
 
