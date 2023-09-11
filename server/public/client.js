@@ -32,21 +32,36 @@ function onReady() {
         $('#display').text($('#display').text() + '0');
     });
     $('#add').on("click", function() {
-        $('#display').text($('#display').text() + '+');
+        $('#display').text($('#display').text() + ' + ');
     });
     $('#subtract').on("click", function() {
-        $('#display').text($('#display').text() + '-');
+        $('#display').text($('#display').text() + ' - ');
     });
     $('#multiply').on("click", function() {
-        $('#display').text($('#display').text() + '*');
+        $('#display').text($('#display').text() + ' * ');
     });
     $('#divide').on("click", function() {
-        $('#display').text($('#display').text() + '/');
-    });
+        $('#display').text($('#display').text() + ' / ');
+    });    
     $('#equals').on("click", calculate); // When clicked, the calculate function will be executed.
     $('#clear').on("click", clearInputs); // When clicked, the clearInputs function will be executed.
-    getHistory(); // Call the getHistory function when the document is ready.
+    getHistory(); // Call the getHistory 
 }
+
+$.ajax({
+    type: 'POST',
+    url: '/calculate',
+    data: {expression: expression},
+}).then(function(response) {
+    console.log('Success:', response);
+    $('#display').text(response.result); // Update the display with the result received from the server.
+    getHistory(); // Update the history.
+}).catch(function(error) {
+    console.error('Error:', error);
+});
+
+
+
 
 function calculate() {
     let expression = $('#display').text(); // Get the current expression from the display.
@@ -54,7 +69,7 @@ function calculate() {
     $.ajax({
         type: 'POST',
         url: '/calculate',
-        data: 'expression=' + encodeURIComponent(expression),
+        data: {expression: expression},
     }).then(function(response) {
         console.log('Success:', response);
         $('#display').text(response.result); // Update the display with the result received from the server.
@@ -73,7 +88,7 @@ function getHistory() {
         type: 'GET',
         url: '/history',
     }).then(function(response) {
-        var historyDiv = $('#history');
+        let historyDiv = $('#history');
         historyDiv.html(''); // Clear the current history.
         response.forEach(item => {
             historyDiv.html(historyDiv.html() + item.expression + ' = ' + item.result + '<br>'); // Append each item in the history received from the server to the historyDiv.
